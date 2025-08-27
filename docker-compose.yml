@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: smartroute_mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: smartroute
+    volumes:
+      - mongodb_data:/data/db
+      - ./data:/data/backup
+    networks:
+      - smartroute_network
+
+  api:
+    build: .
+    container_name: smartroute_api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      MONGODB_URL: mongodb://mongodb:27017
+      DATABASE_NAME: smartroute
+    depends_on:
+      - mongodb
+    volumes:
+      - ./data:/app/data
+    networks:
+      - smartroute_network
+
+volumes:
+  mongodb_data:
+
+networks:
+  smartroute_network:
+    driver: bridge
