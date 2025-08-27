@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: smartroute-backend
+    env: python
+    plan: free
+    buildCommand: "./build.sh"
+    startCommand: "./start.sh"
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.10"
+    healthCheckPath: "/api/v1/health"
