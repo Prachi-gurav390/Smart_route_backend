@@ -2,9 +2,13 @@
 # Exit on error
 set -o errexit
 
-# Install Python dependencies
+# Upgrade pip and install dependencies
 pip install --upgrade pip
-pip install -r requirements.txt
 
-# Load initial data if needed (optional)
+# Install only production dependencies
+pip install --no-cache-dir -r requirements.txt
+
+# Verify installation
+python -c "import fastapi, uvicorn, motor, pymongo, pydantic, geopy; print('All dependencies installed successfully')"
+
 echo "Build completed successfully!"
