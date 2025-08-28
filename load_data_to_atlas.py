@@ -55,7 +55,7 @@ async def load_data_to_atlas():
             await db.routes.delete_many({})
             logger.info("Cleared existing data")
         
-        # Load comprehensive data
+        # Load comprehensive data using the current database connection
         logger.info("Loading comprehensive transport data...")
         await load_comprehensive_data(db)
         
@@ -67,13 +67,14 @@ async def load_data_to_atlas():
         logger.info(f"✓ Stops: {final_stops}")
         logger.info(f"✓ Routes: {final_routes}")
         
-        # Create indexes
-        logger.info("Creating database indexes...")
-        await db.stops.create_index([("location", "2dsphere")])
-        await db.stops.create_index("stop_id", unique=True)
-        await db.routes.create_index("route_id", unique=True)
-        await db.stops.create_index("name")
-        logger.info("✓ Indexes created")
+        # Only create additional indexes if data exists and they don't already exist
+        if final_stops > 0:
+            logger.info("Creating additional database indexes...")
+            try:
+                await db.stops.create_index("name")
+                logger.info("✓ Additional indexes created")
+            except Exception as e:
+                logger.info(f"Note: Some indexes may already exist: {e}")
         
         print(f"""
 🎉 SUCCESS! Your MongoDB Atlas database is ready.

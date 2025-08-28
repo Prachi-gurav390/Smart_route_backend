@@ -298,10 +298,15 @@ async def create_comprehensive_connections():
     return connections
 
 
-async def load_comprehensive_data():
+async def load_comprehensive_data(db=None):
     """Load comprehensive realistic data into MongoDB"""
-    client = AsyncIOMotorClient(settings.MONGODB_URL)
-    db = client[settings.DATABASE_NAME]
+    if db is None:
+        client = AsyncIOMotorClient(settings.MONGODB_URL)
+        db = client[settings.DATABASE_NAME]
+        should_close = True
+    else:
+        should_close = False
+        client = None
     
     try:
         print("Clearing existing data...")
@@ -371,7 +376,8 @@ This network now supports realistic journey planning across Bangalore!
         import traceback
         traceback.print_exc()
     finally:
-        client.close()
+        if should_close and client:
+            client.close()
 
 
 if __name__ == "__main__":

@@ -30,7 +30,8 @@ app.add_middleware(
         "http://localhost:5173",  # Vite dev server  
         "https://*.vercel.app",   # Vercel deployments
         "https://*.netlify.app",  # Netlify deployments
-        # Add your frontend domain here when deployed
+        # Add your frontend domain here when deployed,
+        "https://smart-route-frontend-three.vercel.app"
     ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
